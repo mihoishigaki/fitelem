@@ -18,9 +18,15 @@ import arviz as az
 
 
 
+oldhalostars_dir = os.getcwd() + '/../'
+sys.path.append(oldhalostars_dir)
 
-#sys.path.insert(0, os.path.abspath('./'))
 import oldhalostars.abudata as ad
+import oldhalostars.plot as pt
+
+
+
+
 
 def fmt0(x): 
     return '$%.0f$'%x
@@ -1270,8 +1276,11 @@ def fit_ml_CC_Ia(z0, xfe0, xfeerr0, feh, theta0,zIa, f_Ch, woSiCa = False, Zn_up
   
 
 
-def fit_apogee(starname, catalog, ncores, f_Ch, out_rootdir, Ia = True, CC = True, woSiCa = False, Zn_uplim = False):
+def fit_apogee(starname, ncores, f_Ch, out_rootdir, Ia = True, CC = True, woSiCa = False, Zn_uplim = False):
 
+
+
+    # Set an output directory 
     outdir = out_rootdir + "/MCMCresults_fCh%.2f_CC%1i_Ia%1i_woSiCa%1i_Znuplim%1i/"%\
         (f_Ch, int(CC == True), int(Ia == True), int(woSiCa == True), \
          int(Zn_uplim == True))
@@ -1280,11 +1289,11 @@ def fit_apogee(starname, catalog, ncores, f_Ch, out_rootdir, Ia = True, CC = Tru
         os.mkdir(outdir)
 
 
-
+    # Elements to be taken into account
     elems = ["c", "n", "o", "na", "mg", "al", "si", "ca", "ti", "v", "cr", "mn", "co", "ni", "cu"]
 
     # Read observational data
-    x, data, sigma, mh  = ad.read_APOGEE_xfe(starname, catalog, elems)
+    x, data, sigma, mh  = ad.read_APOGEE_xfe(starname, elems)
 
     # Convert [M/H] to the mass fraction of metal 
     zcc_max = ad.get_zfrac(mh)
@@ -1300,12 +1309,12 @@ def fit_apogee(starname, catalog, ncores, f_Ch, out_rootdir, Ia = True, CC = Tru
         else:
             zIa = 0.1*zsun
 
-
+        logl = LogLike(lnlike_CC_Ia, data, x, sigma, zIa, f_Ch)
     else:
         zIa = np.nan
         f_Ch = np.nan
-        logl = LogLike(lnlike_CC, data, x, sigma, zIa, f_Ch)
 
+        logl = LogLike(lnlike_CC, data, x, sigma, zIa, f_Ch)
 
     outncname = outdir + starname + "_trace.nc"
 
@@ -1353,6 +1362,9 @@ def fit_apogee(starname, catalog, ncores, f_Ch, out_rootdir, Ia = True, CC = Tru
     outname = outdir + starname+"_bestfitparams.csv"
     df.to_csv(outname)
 
+    pt.plot_apogee_abupattern(outdir, starname)
+
+
     return
 
 
@@ -1361,12 +1373,11 @@ def fit_apogee(starname, catalog, ncores, f_Ch, out_rootdir, Ia = True, CC = Tru
 if __name__ == "__main__":
 
     starname = "2M00024677+0127542"
-    catalog = "../../../../APOGEE_sample/APOGEE_halo-sample.csv"
 
     f_Ch = 0.2
-    ncores = 4, 
-    out_rootdir = "../../../../APOGEE_sample/outputs"
-    fit_apogee(starname, catalog, ncores, f_Ch, out_rootdir)
+    ncores = 4 
+    out_rootdir = "../outputs"
+    fit_apogee(starname, ncores, f_Ch, out_rootdir)
 
 
 

@@ -2046,7 +2046,11 @@ def plot_apogee_abupattern(paramdir, starname, f_Ch=0.2):
 
     chi2 = np.nan
     dof = np.nan
-    outpath = "../../../APOGEE_sample/figs/"
+    outpath = "../figs/"
+
+    if not os.path.exists(outpath):
+        os.makedirs(outpath)
+
     plot_bestfitmodel_CC_Ia(starname,outpath, abuclasslab, z,xfe, \
                                     xfeerr,feh,mean_params, \
                                     zIa,f_Ch,chi2,dof, modelid, \
@@ -2059,7 +2063,7 @@ if __name__ == "__main__":
 
     starname = "2M00024677+0127542"
 
-    paramdir = "../../../APOGEE_sample/outputs/MCMCresults_fCh0.20_CC1_Ia1_woSiCa0_Znuplim0/"
+    paramdir = "../outputs/MCMCresults_fCh0.20_CC1_Ia1_woSiCa0_Znuplim0/"
     plot_apogee_abupattern(paramdir, starname)
 
 

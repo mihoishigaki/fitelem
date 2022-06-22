@@ -28,8 +28,6 @@ from astroquery.gaia import Gaia
 
 def calc_ElemMass(z,xmass):
 
-    # Given isotopic mass fractions for a specific element Z, calculate the mass fraction for that element
-
     if z==1:  # H
         mass=np.sum(xmass[0]+xmass[1])
     elif z==2: # He
@@ -108,7 +106,7 @@ def calc_ElemMass(z,xmass):
 
 def get_solarm(z):
     
-    solarfile='../../../utility/solarabund/ipcc.dat'
+    solarfile='../utility/solarabund/ipcc.dat'
     
     zsuns,abusuns=np.loadtxt(solarfile,usecols=(1,5),unpack=True,skiprows=1)
     
@@ -307,10 +305,10 @@ def select_ohs(catalog_csv, plot = False):
 
 
 
-def select_kinematics(df0, catalog_dir, selection_method = "vtot", sanity_check = False):
+def select_kinematics(df0, selection_method = "vtot", sanity_check = False):
 
 
-    #catalog_dir = "../../data/GALAH_DR3/"
+    catalog_dir = "../../data/GALAH_DR3/"
     
     # selection_method
     ##   1. vtot
@@ -553,7 +551,7 @@ def write_abundance_data(df, outfilename):
 
 
 
-def plot_xfe_feh(df, outdir, axislabelcolor = False, plot_all_elems = False):
+def plot_xfe_feh(df, axislabelcolor = False, plot_all_elems = False):
 
 
     # Plot settinigs
@@ -744,16 +742,16 @@ def plot_xfe_feh(df, outdir, axislabelcolor = False, plot_all_elems = False):
     plt.subplots_adjust(wspace = 0.17, hspace = 0.05)
 
     if axislabelcolor == True:
-        fig.savefig(outdir + "/XFe_FeH_alc.png")
+        fig.savefig("../figs/XFe_FeH_alc.png")
     else:
     
-        fig.savefig(outdir + "/XFe_FeH.pdf")
-        fig.savefig(outdir + "/XFe_FeH.png")
+        fig.savefig("../figs/XFe_FeH.pdf")
+        fig.savefig("../figs/XFe_FeH.png")
 
     return()
 
 
-def plot_bay(df, outdir):
+def plot_bay(df):
 
 
     # Plot settinigs
@@ -829,7 +827,7 @@ def plot_bay(df, outdir):
 
     plt.tight_layout()
     plt.subplots_adjust(wspace=0.1)
-    plt.savefig(outdir + '/Ba_Y.pdf')
+    plt.savefig('../figs/Ba_Y.pdf')
     
 
 
@@ -1135,7 +1133,7 @@ def plot_toomre(df_all, df_age, df_ohs, df_good_abund, axislabelcolor = False):
 
 
 
-def plot_cmd(df_all, df_age, df_ohs, isochrone, outdir, axislabelcolor = False):
+def plot_cmd(df_all, df_age, df_ohs, isochrone, axislabelcolor = False):
 
 
     # Plot setting:
@@ -1150,13 +1148,13 @@ def plot_cmd(df_all, df_age, df_ohs, isochrone, outdir, axislabelcolor = False):
     if isochrone == "Padova":
         labs = ["5.3Gyr", "10.0Gyr", "11.5Gyr", "13.2Gyr"]
         isoages = [ 5.25e+9, 1.00e+10, 1.15e+10, 1.32e+10 ]
-        isopath =  "../../../utility/isochrone/Padova_logt9.00-10.13/"
+        isopath =  "../utility/isochrone/Padova_logt9.00-10.13/"
         isofiles = ["output_Z0.00048.dat","output_Z0.00152.dat","output_Z0.00481.dat"]
     elif isochrone == "DM":
         labs = ["5Gyr", "10Gyr", "12Gyr", "14Gyr"]
         labsalpha = ["5Gyr", "10Gyr", "12Gyr", "14Gyr"]
         isoages = [5, 10, 12, 14]
-        isopath = "../../../utility/isochrone/Dartmouth/"
+        isopath = "../utility/isochrone/Dartmouth/"
 
 
         
@@ -1188,9 +1186,9 @@ def plot_cmd(df_all, df_age, df_ohs, isochrone, outdir, axislabelcolor = False):
     if axislabelcolor == True:
 
         matplotlib.rc('axes', edgecolor = alc)
-        outfig = outdir + "/CMD_axiscolor.pdf"
+        outfig = "../figs/CMD_axiscolor.pdf"
     else:
-        outfig = outdir + "/CMD.pdf"
+        outfig = "../figs/CMD.pdf"
     
     
     for i, fehbin in enumerate(fehbins):
@@ -1406,7 +1404,7 @@ def register_Sharma20():
 
 
 
-def calc_orbit(df, plot, MWpotential, outdir):
+def calc_orbit(df, plot, MWpotential):
     
  
 
@@ -1474,7 +1472,7 @@ def calc_orbit(df, plot, MWpotential, outdir):
 
             o[i].plot([o.R()[i]],[o.z()[i]],'ro',label=[starname])
             plt.legend()
-            plt.savefig(outdir + '/Orbit_'+np.str(starname)+'.png')
+            plt.savefig('../figs/orbits/Orbit_'+np.str(starname)+'.png')
        
             xx=o.x(ts)[i]
             yy=o.y(ts)[i]
@@ -1503,7 +1501,7 @@ def calc_orbit(df, plot, MWpotential, outdir):
 
 
     
-        f = open(outdir+'/orbitalparams_'+np.str(starname)+'.txt','w')
+        f = open('../outputs/Orbits/orbitalparams_'+np.str(starname)+'.txt','w')
         f.write("Rapo, Rapo_ana, Rperi, Rperi_ana, e, e_ana, zmax, zmax_ana, E, Lz\n")
         
         rapo=o.rap()[i]
@@ -1526,7 +1524,7 @@ def calc_orbit(df, plot, MWpotential, outdir):
 
 
 
-def plot_E_Lz(df, outdir, axislabelcolor = False):
+def plot_E_Lz(df, axislabelcolor = False):
 
     #catalog="GALAH_Sanders18_GaiaDR2_ParallaxE10percent_rvmatch_MSTO_relage20percent_Age.csv"
     ##catalog="GALAH_Sanders18_GaiaDR2_ParallaxE10percent_rvmatch_MSTO_relage20percent_Kinematics.csv"
@@ -1648,9 +1646,9 @@ def plot_E_Lz(df, outdir, axislabelcolor = False):
             ax[i].xaxis.label.set_color(alc)
 
         
-        outfig = outdir + '/E_Lz_Zmax_Rapo_alc.pdf'
+        outfig = '../figs/E_Lz_Zmax_Rapo_alc.pdf'
     else:
-        outfig = outdir + '/E_Lz_Zmax_Rapo.pdf'
+        outfig = '../figs/E_Lz_Zmax_Rapo.pdf'
     
     plt.tight_layout()
     plt.savefig(outfig)
@@ -1920,9 +1918,9 @@ def read_GALAH_xfe(starname, elems):
     return(z, xfe, xfeerr, feh, abuclass)
 
 
-def read_APOGEE_xfe(starname, catalog, elems):
+def read_APOGEE_xfe(starname, elems):
 
-    df0 = pd.read_csv(catalog)
+    df0 = pd.read_csv("../input_APOGEE/APOGEE_halo-sample.csv")
 
     filt = df0["apogee_id"] == starname
     df = df0[filt]
